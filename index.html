@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LitGap Analyzer - Research Gap Detection</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Modern Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- PDF.js library files -->
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  </head>
+  <body>
+    <!-- Compact header that hides on scroll -->
+    <header class="navbar" id="main-header">
+      <div class="container">
+        <div class="navbar-content">
+          <div class="navbar-brand" id="navbar-brand">
+            <i data-lucide="layers" class="brand-icon"></i>
+            <div class="brand-text">
+              <h1>LitGap</h1>
+            </div>
+            <div class="brand-toggle-indicator">
+              <i data-lucide="sidebar" class="toggle-icon"></i>
+            </div>
+          </div>
+          <div class="theme-toggle">
+            <button id="theme-toggle-btn" aria-label="Toggle dark mode">
+              <i data-lucide="sun" class="theme-icon" id="theme-icon-light"></i>
+              <i
+                data-lucide="moon"
+                class="theme-icon"
+                id="theme-icon-dark"
+                style="display: none"
+              ></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="container">
+        <!-- App intro that hides after upload -->
+        <div class="app-intro" id="app-intro">
+          <h2>Research Literature Analysis</h2>
+          <p>
+            Upload academic papers to identify key insights, compare
+            methodologies, and discover research gaps
+          </p>
+        </div>
+
+        <!-- Upload section with soft animation -->
+        <section id="upload-section" class="panel">
+          <div class="panel-header">
+            <i data-lucide="file-upload" class="panel-icon"></i>
+            <h3>Upload Papers</h3>
+          </div>
+
+          <div class="upload-area" id="upload-area">
+            <input
+              type="file"
+              id="file-input"
+              multiple
+              accept=".pdf"
+              style="display: none"
+            />
+            <div class="upload-content">
+              <div class="upload-illustration">
+                <i data-lucide="file-text" class="upload-icon"></i>
+              </div>
+              <p class="upload-text">Drag & drop PDF files here</p>
+              <p class="upload-subtext">or</p>
+              <button class="btn btn-outlined" id="upload-btn">
+                <i data-lucide="folder-open" class="btn-icon"></i>
+                Browse files
+              </button>
+            </div>
+          </div>
+
+          <div id="file-list" class="file-list"></div>
+
+          <div class="panel-actions">
+            <button id="analyze-btn" class="btn btn-primary" disabled>
+              <i data-lucide="search" class="btn-icon"></i>
+              Analyze Papers
+            </button>
+          </div>
+        </section>
+
+        <!-- Modern progress indicator -->
+        <section
+          id="progress-container"
+          class="panel progress-panel"
+          style="display: none"
+        >
+          <div class="progress-header">
+            <div class="progress-title">
+              <i data-lucide="loader" class="progress-icon spinning"></i>
+              <h3>Analysis in Progress</h3>
+            </div>
+            <span class="progress-percentage" id="progress-percentage">0%</span>
+          </div>
+
+          <div class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+          </div>
+
+          <div class="progress-detail">
+            <p id="progress-status">Preparing to analyze papers...</p>
+            <div class="progress-steps">
+              <div class="progress-step" data-step="extract">
+                <div class="step-indicator">1</div>
+                <span>Extracting</span>
+              </div>
+              <div class="progress-connector"></div>
+              <div class="progress-step" data-step="analyze">
+                <div class="step-indicator">2</div>
+                <span>Analyzing</span>
+              </div>
+              <div class="progress-connector"></div>
+              <div class="progress-step" data-step="compare">
+                <div class="step-indicator">3</div>
+                <span>Comparing</span>
+              </div>
+              <div class="progress-connector"></div>
+              <div class="progress-step" data-step="gaps">
+                <div class="step-indicator">4</div>
+                <span>Finding Gaps</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Results section with sidebar navigation -->
+        <section id="results-section" style="display: none">
+          <!-- Sidebar with icon-only mode by default -->
+          <aside id="sidebar" class="sidebar">
+            <!-- Removed duplicate logo here -->
+            <div class="sidebar-header">
+              <h3>Navigation</h3>
+              <button class="sidebar-close" id="sidebar-close">
+                <i data-lucide="x" class="sidebar-close-icon"></i>
+              </button>
+            </div>
+
+            <div class="sidebar-tabs" id="tabs">
+              <button class="sidebar-tab active" data-tab="summary">
+                <i data-lucide="layout-list" class="tab-icon"></i>
+                <span>Summary</span>
+              </button>
+              <button class="sidebar-tab" data-tab="compare">
+                <i data-lucide="git-compare" class="tab-icon"></i>
+                <span>Compare</span>
+              </button>
+              <button class="sidebar-tab" data-tab="gaps">
+                <i data-lucide="zoom-in" class="tab-icon"></i>
+                <span>Research Gaps</span>
+              </button>
+            </div>
+          </aside>
+
+          <div class="content-area">
+            <div class="tab-content">
+              <div id="summary-tab" class="tab-pane active">
+                <!-- Summary content goes here -->
+              </div>
+
+              <div id="compare-tab" class="tab-pane">
+                <!-- Comparison content goes here -->
+              </div>
+
+              <div id="gaps-tab" class="tab-pane">
+                <!-- Gaps content goes here -->
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>
+          LitGap Analyzer &copy; 2025 | An AI-powered research gap analysis tool
+        </p>
+      </div>
+    </footer>
+
+    <!-- Modern loading overlay with blurred background -->
+    <div id="loading-overlay" class="loading-overlay">
+      <div class="loader-card">
+        <div class="loader-animation">
+          <div class="spinner-ring"></div>
+          <i data-lucide="file-search" class="loader-icon"></i>
+        </div>
+        <h3 class="loader-title">Processing</h3>
+        <p id="loading-text" class="loader-text">
+          Analyzing academic papers...
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Initialize Lucide icons
+      document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle-btn');
+        const iconLight = document.getElementById('theme-icon-light');
+        const iconDark = document.getElementById('theme-icon-dark');
+
+        themeToggle.addEventListener('click', () => {
+          document.body.classList.toggle('dark-mode');
+          const isDarkMode = document.body.classList.contains('dark-mode');
+
+          iconLight.style.display = isDarkMode ? 'none' : 'block';
+          iconDark.style.display = isDarkMode ? 'block' : 'none';
+
+          localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        });
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+          document.body.classList.add('dark-mode');
+          iconLight.style.display = 'none';
+          iconDark.style.display = 'block';
+        }
+
+        // Hide header on scroll down, show on scroll up
+        let lastScrollTop = 0;
+        const header = document.getElementById('main-header');
+
+        window.addEventListener('scroll', () => {
+          const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
+
+          if (scrollTop > lastScrollTop && scrollTop > 50) {
+            // Scrolling down
+            header.classList.add('navbar-hidden');
+          } else {
+            // Scrolling up
+            header.classList.remove('navbar-hidden');
+          }
+
+          lastScrollTop = scrollTop;
+        });
+
+        // Updated sidebar toggle functionality
+        const navbarBrand = document.getElementById('navbar-brand');
+        const sidebarClose = document.getElementById('sidebar-close');
+        const sidebar = document.getElementById('sidebar');
+
+        navbarBrand.addEventListener('click', () => {
+          sidebar.classList.toggle('sidebar-open');
+          document.body.classList.toggle('sidebar-active');
+
+          // Update sidebar expanded state
+          sidebar.classList.toggle('expanded');
+          document.body.classList.toggle(
+            'sidebar-expanded',
+            sidebar.classList.contains('expanded')
+          );
+        });
+
+        sidebarClose.addEventListener('click', () => {
+          sidebar.classList.remove('sidebar-open');
+          sidebar.classList.remove('expanded');
+          document.body.classList.remove('sidebar-active');
+          document.body.classList.remove('sidebar-expanded');
+        });
+      });
+    </script>
+    <script src="js/app.js" type="module"></script>
+  </body>
+</html>
